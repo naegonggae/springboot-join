@@ -17,7 +17,7 @@ public class UserService {
         userRepository.findByUserName(userName)
                 // 있으면 메세지 출력해주기 기능
                 .ifPresent(user -> {
-                    throw  new RuntimeException(userName + "는 이미 있습니다.");
+                    throw new RuntimeException(userName + "는 이미 있습니다.");
                 });
 
         // 저장
