@@ -1,6 +1,8 @@
 package com.springboot.join.service;
 
 import com.springboot.join.domain.User;
+import com.springboot.join.exceprion.AppException;
+import com.springboot.join.exceprion.ErrorCode;
 import com.springboot.join.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +19,7 @@ public class UserService {
         userRepository.findByUserName(userName)
                 // 있으면 메세지 출력해주기 기능
                 .ifPresent(user -> {
-                    throw new RuntimeException(userName + "는 이미 있습니다.");
+                    throw new AppException(ErrorCode.USERNAME_DUPLICATED, userName + "는 이미 있습니다.");
                 });
 
         // 저장
