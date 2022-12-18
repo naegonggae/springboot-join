@@ -57,4 +57,21 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isConflict());
     }
+
+    @Test
+    @DisplayName("로그인 성공")
+    void loin_Success() throws Exception {
+    }
+
+    @Test
+    @DisplayName("로그인 실패 - userName 없음")
+    void loin_Fail1() throws Exception {
+
+    }
+
+    @Test
+    @DisplayName("로그인 실패 - password 없음")
+    void loin_Fail2() throws Exception {
+
+    }
 }
