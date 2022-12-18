@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -36,11 +37,13 @@ class UserControllerTest {
 
     @Test
     @DisplayName("회원가입 성공")
+    @WithMockUser
     void join_Success() throws Exception {
         String userName = "dalnim";
         String password = "1234";
 
         mockMvc.perform(post("/api/v1/users/join")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new UserJoinRequest(userName, password)))) //httpsRequest에 값을 보낼때는 Byte로 보냄
                 .andDo(print())
@@ -49,6 +52,7 @@ class UserControllerTest {
 
     @Test
     @DisplayName("회원가입 실패 - userName 중복")
+    @WithMockUser
     void join_Fail() throws Exception {
         String userName = "dalnim";
         String password = "1234";
@@ -57,6 +61,7 @@ class UserControllerTest {
                 .thenThrow(new RuntimeException("해당 userId가 중복됩니다."));
 
         mockMvc.perform(post("/api/v1/users/join")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new UserJoinRequest(userName, password)))) //httpsRequest에 값을 보낼때는 Byte로 보냄
                 .andDo(print())
@@ -71,7 +76,7 @@ class UserControllerTest {
     //실패 - 잘못된 password 입력 —> Unauthorized
     @Test
     @DisplayName("로그인 성공")
-    @WithAnonymousUser // security test gradle 추가하고 작성
+    @WithMockUser // security test gradle 추가하고 작성
     void loin_Success() throws Exception {
         String userName = "dalnim";
         String password = "1234";
@@ -79,7 +84,7 @@ class UserControllerTest {
         when(userService.login(any(), any()))
                 .thenReturn("token");
 
-        mockMvc.perform(post("/api/v1/users/loin")
+        mockMvc.perform(post("/api/v1/users/login")
                         .with(csrf())// security test gradle 추가하고 작성
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new UserLoinRequest(userName, password))))
@@ -89,7 +94,7 @@ class UserControllerTest {
 
     @Test
     @DisplayName("로그인 실패 - userName 없음")
-    @WithAnonymousUser // security test gradle 추가하고 작성
+    @WithMockUser // security test gradle 추가하고 작성
     void loin_Fail1() throws Exception {
         String userName = "dalnim";
         String password = "1234";
@@ -97,7 +102,7 @@ class UserControllerTest {
         when(userService.login(any(), any()))
                 .thenThrow(new AppException(ErrorCode.USERNAME_NOT_FOUND, ""));
 
-        mockMvc.perform(post("/api/v1/users/loin")
+        mockMvc.perform(post("/api/v1/users/login")
                         .with(csrf())// security test gradle 추가하고 작성
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new UserLoinRequest(userName, password))))
@@ -107,7 +112,7 @@ class UserControllerTest {
 
     @Test
     @DisplayName("로그인 실패 - password 없음")
-    @WithAnonymousUser // security test gradle 추가하고 작성
+    @WithMockUser // security test gradle 추가하고 작성
     void loin_Fail2() throws Exception {
         String userName = "dalnim";
         String password = "1234";
@@ -115,7 +120,7 @@ class UserControllerTest {
         when(userService.login(any(), any()))
                 .thenThrow(new AppException(ErrorCode.INVALID_PASSWORD, ""));
 
-        mockMvc.perform(post("/api/v1/users/loin")
+        mockMvc.perform(post("/api/v1/users/login")
                         .with(csrf()) // security test gradle 추가하고 작성
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(new UserLoinRequest(userName, password))))
