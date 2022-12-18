@@ -32,6 +32,7 @@ public class UserService {
                 });
 
         // 저장
+        log.info("password:{}, userName:{}", password, userName);
         User user = User.builder()
                 .userName(userName)
                 .password(encoder.encode(password))

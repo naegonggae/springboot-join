@@ -81,9 +81,11 @@ class UserControllerTest {
         String userName = "dalnim";
         String password = "1234";
 
+        // userService.login()은 문제가 없다.
         when(userService.login(any(), any()))
                 .thenReturn("token");
 
+        // Controller만 테스트
         mockMvc.perform(post("/api/v1/users/login")
                         .with(csrf())// security test gradle 추가하고 작성
                         .contentType(MediaType.APPLICATION_JSON)
